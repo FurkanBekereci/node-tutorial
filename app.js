@@ -1,25 +1,20 @@
-const http = require('http');
+const express = require('express');
+const app = express();
+const peopleRouter = require('./routes/people');
+const authRouter = require('./routes/auth');
+// req -> middleware -> res
 
-const server = http.createServer((req,res)=> {
-    const url = req.url;
-    switch (url) {
-        case '/':
-            res.writeHead(200,{'content-type':'text/html'});
-            res.write('<h1>Home page</h1>');
-            res.end();
-            break;
-        case '/about':
-            res.writeHead(200,{'content-type':'text/html'});
-            res.write('<h1>About page</h1>');
-            res.end();
-            break;
-        default:
-            res.writeHead(404,{'content-type':'text/html'});
-            res.write('<h1>Page not found</h1>');
-            res.end();
-            break;
-    }
+app.use(express.static('./methods-public'));
+// allowing the parsing form body posting...
+app.use(express.urlencoded({extended : false}));
+// allowing the parse json body data
+app.use(express.json());
 
-}).listen(5000);
+app.use('/api/people', peopleRouter);
+app.use('/api/auth' , authRouter);
 
-// Video kalınan yer. 4:32:02
+
+
+app.listen(5000, () => {
+    console.log('Server is listening on port 5000');
+})
